@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Gerencial SIAFI - IFMA Campus Carolina</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* Stone 50 */
+            color: #292524; /* Stone 800 */
+        }
+        
+        /* Chart Container Styling - MANDATORY Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constraint width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        .nav-item.active {
+            border-bottom: 2px solid #d97706; /* Amber 600 */
+            color: #d97706;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-700 text-white p-2 rounded font-bold text-sm tracking-widest">IFMA</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-stone-900 leading-tight">Relatório Gerencial SIAFI</h1>
+                        <p class="text-xs text-stone-500">UG: 158128 (Campus Carolina) | Ref: Dez/2025</p>
+                    </div>
+                </div>
+                <div class="hidden md:block text-right">
+                    <p class="text-xs font-medium text-stone-500">Data de Extração</p>
+                    <p class="text-sm font-bold text-stone-800">19/12/2025</p>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex space-x-8 -mb-px overflow-x-auto no-scrollbar" aria-label="Tabs">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-item active whitespace-nowrap py-4 px-1 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors">
+                    Visão Geral
+                </button>
+                <button onclick="switchTab('risks')" id="tab-risks" class="nav-item whitespace-nowrap py-4 px-1 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors">
+                    ⚠️ Top 5 & Riscos
+                </button>
+                <button onclick="switchTab('insights')" id="tab-insights" class="nav-item whitespace-nowrap py-4 px-1 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors">
+                    🔍 Insights Estratégicos
+                </button>
+                <button onclick="switchTab('list')" id="tab-list" class="nav-item whitespace-nowrap py-4 px-1 text-sm font-medium text-stone-500 hover:text-stone-700 transition-colors">
+                    Lista Completa (48)
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow bg-stone-50 p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="space-y-6">
+                <!-- Intro -->
+                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-emerald-500">
+                    <h2 class="text-xl font-bold text-stone-800 mb-2">Resumo Executivo</h2>
+                    <p class="text-stone-600 leading-relaxed">
+                        A execução orçamentária do exercício de 2025 apresenta uma performance positiva de <strong class="text-emerald-700">82,63% de liquidação</strong>. 
+                        O saldo pendente (R$ 220.080,39) está altamente concentrado em serviços continuados, exigindo ação focalizada antes do encerramento do exercício.
+                    </p>
+                </div>
+
+                <!-- KPIs -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1 -->
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-stone-100">
+                        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Total Empenhado</p>
+                        <p class="text-2xl font-bold text-stone-800 mt-1">R$ 1.267.412,86</p>
+                        <div class="mt-2 text-xs text-stone-400">48 Notas Processadas</div>
+                    </div>
+                    <!-- KPI 2 -->
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-stone-100">
+                        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Total Liquidado</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1">R$ 1.047.332,47</p>
+                        <div class="mt-2 text-xs text-emerald-600 font-medium">82,63% Executado</div>
+                    </div>
+                    <!-- KPI 3 -->
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-stone-100">
+                        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Saldo a Liquidar</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1">R$ 220.080,39</p>
+                        <div class="mt-2 text-xs text-amber-600 font-medium">17,37% Pendente</div>
+                    </div>
+                    <!-- KPI 4 -->
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-stone-100">
+                        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Volume de Processos</p>
+                        <div class="flex items-end gap-2 mt-1">
+                            <p class="text-2xl font-bold text-stone-800">20</p>
+                            <span class="text-sm text-stone-500 mb-1">Pendentes</span>
+                        </div>
+                        <div class="w-full bg-stone-200 rounded-full h-1.5 mt-2">
+                            <div class="bg-amber-500 h-1.5 rounded-full" style="width: 41.6%"></div>
+                        </div>
+                        <div class="mt-1 text-xs text-stone-400">41,6% das notas requerem atenção</div>
+                    </div>
+                </div>
+
+                <!-- Visualizations Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart: Liquidation Status -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-100">
+                        <h3 class="text-sm font-bold text-stone-700 mb-4 border-b pb-2">Status da Execução (Valores)</h3>
+                        <div class="flex flex-col items-center">
+                            <div class="chart-container">
+                                <canvas id="chartStatus"></canvas>
+                            </div>
+                            <p class="mt-4 text-xs text-center text-stone-500 max-w-sm">
+                                A maior parte do orçamento já foi executada. O foco gerencial deve ser direcionado exclusivamente para a fatia laranja (Pendente).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart: Notes Count Status -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-100">
+                        <h3 class="text-sm font-bold text-stone-700 mb-4 border-b pb-2">Volume de Notas (Qtd)</h3>
+                        <div class="flex flex-col items-center">
+                            <div class="chart-container">
+                                <canvas id="chartCount"></canvas>
+                            </div>
+                            <p class="mt-4 text-xs text-center text-stone-500 max-w-sm">
+                                Embora o valor pendente seja baixo (17%), o volume de processos abertos (20 notas) ainda é alto, exigindo esforço administrativo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: RISKS (TOP 5) -->
+            <div id="view-risks" class="hidden space-y-6">
+                <!-- Context -->
+                <div class="bg-amber-50 rounded-lg p-6 border border-amber-100">
+                    <h2 class="text-lg font-bold text-amber-900 mb-2">Concentração de Riscos (Princípio de Pareto)</h2>
+                    <p class="text-amber-800 text-sm">
+                        Identificamos que <strong>68,38%</strong> de todo o saldo pendente (R$ 150.477,87) está concentrado em apenas <strong>5 Notas de Empenho</strong>. A resolução destes 5 itens resolve a maior parte do passivo da UG.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chart: Risk Concentration -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-100 lg:col-span-1">
+                        <h3 class="text-sm font-bold text-stone-700 mb-4">Distribuição do Saldo Pendente</h3>
+                        <div class="chart-container">
+                            <canvas id="chartRisks"></canvas>
+                        </div>
+                        <div class="mt-4 p-3 bg-stone-50 rounded text-xs text-stone-600">
+                            <strong>Risco de Monopólio:</strong> TECSEG e B M DE ALMEIDA detêm, juntas, <strong>56%</strong> de todo o valor a liquidar.
+                        </div>
+                    </div>
+
+                    <!-- Top 5 List -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="text-sm font-bold text-stone-700 mb-2">Detalhamento das 5 Maiores Pendências</h3>
+                        
+                        <!-- Card 1 -->
+                        <div class="bg-white p-4 rounded border-l-4 border-red-500 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-0.5 rounded">1º - CRÍTICO</span>
+                                    <h4 class="font-bold text-stone-800 mt-1">2025NE000023 - TECSEG TECNOLOGIA</h4>
+                                    <p class="text-sm text-stone-600">Serviços de Vigilância Armada</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-red-600">R$ 76.240,00</p>
+                                    <p class="text-xs text-stone-500">34,6% do Total Pendente</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-sm bg-stone-50 p-2 rounded text-stone-700 border border-stone-200">
+                                <strong>Ação:</strong> Verificar folhas de ponto e notas fiscais dos últimos meses. Risco de descontinuidade da segurança.
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="bg-white p-4 rounded border-l-4 border-red-500 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-0.5 rounded">2º - CRÍTICO</span>
+                                    <h4 class="font-bold text-stone-800 mt-1">2025NE000083 - B M DE ALMEIDA</h4>
+                                    <p class="text-sm text-stone-600">Limpeza, Asseio e Conservação</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-red-600">R$ 48.489,02</p>
+                                    <p class="text-xs text-stone-500">22,0% do Total Pendente</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-sm bg-stone-50 p-2 rounded text-stone-700 border border-stone-200">
+                                <strong>Ação:</strong> Auditar execução do serviço. Necessário verificar se houve falha na execução ou atraso de fatura.
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="bg-white p-4 rounded border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded">3º - ALTO</span>
+                                    <h4 class="font-bold text-stone-800 mt-1">2025NE000085 - MAXTEC SERVIÇOS</h4>
+                                    <p class="text-sm text-stone-600">Apoio Administrativo e Operacional</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-amber-600">R$ 12.259,68</p>
+                                    <p class="text-xs text-stone-500">5,5% do Total Pendente</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="bg-white p-4 rounded border-l-4 border-amber-500 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded">4º - ALTO</span>
+                                    <h4 class="font-bold text-stone-800 mt-1">2025NE000079 - BRS SUPRIMENTOS</h4>
+                                    <p class="text-sm text-stone-600">Almoxarifado Virtual</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-amber-600">R$ 10.387,77</p>
+                                    <p class="text-xs text-stone-500">4,7% do Total Pendente</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="bg-white p-4 rounded border-l-4 border-yellow-400 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded">5º - MODERADO</span>
+                                    <h4 class="font-bold text-stone-800 mt-1">2025NE000135 - SAAE (ÁGUA)</h4>
+                                    <p class="text-sm text-stone-600">Fornecimento de Água e Esgoto</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-amber-600">R$ 3.101,40</p>
+                                    <p class="text-xs text-stone-500">1,4% do Total Pendente</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: INSIGHTS -->
+            <div id="view-insights" class="hidden space-y-6">
+                <!-- Intro Paragraph -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+                    <h2 class="text-xl font-bold text-stone-800 mb-2">Análise Estratégica e Não Óbvia</h2>
+                    <p class="text-stone-600">
+                        Esta seção cruza dados para identificar ineficiências operacionais que não são visíveis apenas olhando os valores monetários. O objetivo é otimizar o tempo da equipe financeira.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Insight 1: Administrative Burden -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-indigo-500">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-2xl">⚖️</span>
+                            <h3 class="text-lg font-bold text-stone-800">Custo da Assimetria (Pareto Invertido)</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-4">
+                            41% das notas (20 processos) exigem gestão, mas representam apenas 17% do orçamento pendente. A equipe gasta o mesmo tempo burocrático para encerrar uma nota de R$ 100 e uma de R$ 50.000.
+                        </p>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="chartEffort"></canvas>
+                        </div>
+                        <div class="mt-4 bg-indigo-50 p-3 rounded text-sm text-indigo-900">
+                            <strong>Recomendação:</strong> Criar um "Fast Track" para sanear as 15 menores pendências em um único dia de trabalho.
+                        </div>
+                    </div>
+
+                    <!-- Insight 2: Zombie Notes -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-stone-500">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-2xl">🧟</span>
+                            <h3 class="text-lg font-bold text-stone-800">"Poeira Orçamentária" e Notas Zumbis</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-4">
+                            Existem notas ativas com saldos irrisórios que poluem os relatórios e impedem o encerramento contábil limpo.
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center border-b py-2">
+                                <span class="text-sm font-medium">NE000080</span>
+                                <span class="text-sm text-stone-500">Saldo: R$ 18,00</span>
+                                <span class="text-xs bg-stone-200 px-2 py-1 rounded">Sobras</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b py-2">
+                                <span class="text-sm font-medium">NE000020</span>
+                                <span class="text-sm text-stone-500">Saldo: R$ 769,98</span>
+                                <span class="text-xs bg-stone-200 px-2 py-1 rounded">Sobras</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b py-2">
+                                <span class="text-sm font-medium">NE000267</span>
+                                <span class="text-sm text-stone-500">Saldo: R$ 0,00</span>
+                                <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Erro de Status</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-stone-100 p-3 rounded text-sm text-stone-800">
+                            <strong>Ação:</strong> Executar "Operação Pente Fino" e anular saldos < R$ 1.000 sem previsão de fatura imediata.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW: LIST -->
+            <div id="view-list" class="hidden space-y-6">
+                <!-- Controls -->
+                <div class="bg-white p-4 rounded-lg shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <h2 class="text-lg font-bold text-stone-800">Listagem Completa (48 Notas)</h2>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <input type="text" id="searchInput" placeholder="Buscar NE, Valor ou Status..." class="border border-stone-300 rounded px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <select id="statusFilter" class="border border-stone-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="all">Todos</option>
+                            <option value="Total">Totalmente Liquidada</option>
+                            <option value="Parcial">Parcial / Pendente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-stone-200">
+                            <thead class="bg-stone-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Nota de Empenho</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Emissão</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-stone-500 uppercase tracking-wider">Valor Total</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-stone-500 uppercase tracking-wider">A Liquidar</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-stone-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="bg-white divide-y divide-stone-200">
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="noResults" class="hidden text-center py-8 text-stone-500">
+                    Nenhuma nota encontrada com os filtros atuais.
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm text-stone-500">Sistema Integrado de Administração Financeira do Governo Federal - SIAFI</p>
+            <p class="text-xs text-stone-400 mt-1">Relatório gerado em 19/12/2025 às 09:38:49</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data Source from Report
+        const reportData = {
+            totalEmpenhado: 1267412.86,
+            totalLiquidado: 1047332.47,
+            totalALiquidar: 220080.39,
+            countTotal: 48,
+            countLiquidado: 28,
+            countParcial: 20
+        };
+
+        const top5Risks = [
+            { rank: 1, ne: "2025NE000023", fav: "TECSEG", val: 76240.00, pct: 34.64 },
+            { rank: 2, ne: "2025NE000083", fav: "B M DE ALMEIDA", val: 48489.02, pct: 22.04 },
+            { rank: 3, ne: "2025NE000085", fav: "MAXTEC", val: 12259.68, pct: 5.57 },
+            { rank: 4, ne: "2025NE000079", fav: "BRS SUPRIMENTOS", val: 10387.77, pct: 4.72 },
+            { rank: 5, ne: "2025NE000135", fav: "SAAE (ÁGUA)", val: 3101.40, pct: 1.41 }
+        ];
+
+        // Complete List Data
+        const notesList = [
+            { ne: "2025NE000020", date: "14/01/2025", total: 3079.92, pending: 769.98, status: "Parcial" },
+            { ne: "2025NE000021", date: "14/01/2025", total: 39927.72, pending: 0.00, status: "Total" },
+            { ne: "2025NE000022", date: "14/01/2025", total: 10000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000023", date: "14/01/2025", total: 327279.22, pending: 76240.00, status: "Parcial" },
+            { ne: "2025NE000035", date: "04/02/2025", total: 3000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000038", date: "04/02/2025", total: 2000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000062", date: "10/02/2025", total: 5928.00, pending: 1976.00, status: "Parcial" },
+            { ne: "2025NE000079", date: "14/02/2025", total: 30334.53, pending: 10387.77, status: "Parcial" },
+            { ne: "2025NE000080", date: "17/02/2025", total: 1131.00, pending: 18.00, status: "Parcial" },
+            { ne: "2025NE000083", date: "17/02/2025", total: 189280.99, pending: 48489.02, status: "Parcial" },
+            { ne: "2025NE000085", date: "18/02/2025", total: 57484.68, pending: 12259.68, status: "Parcial" },
+            { ne: "2025NE000089", date: "20/02/2025", total: 11844.98, pending: 0.00, status: "Total" },
+            { ne: "2025NE000109", date: "27/02/2025", total: 2830.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000118", date: "11/03/2025", total: 156.61, pending: 0.00, status: "Total" },
+            { ne: "2025NE000130", date: "19/03/2025", total: 1800.00, pending: 3101.40, status: "Parcial" },
+            { ne: "2025NE000135", date: "21/03/2025", total: 19663.81, pending: 3101.40, status: "Parcial" },
+            { ne: "2025NE000157", date: "11/04/2025", total: 10000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000161", date: "14/04/2025", total: 4020.08, pending: 0.00, status: "Total" },
+            { ne: "2025NE000182", date: "13/05/2025", total: 1431.68, pending: 0.00, status: "Total" },
+            { ne: "2025NE000196", date: "19/05/2025", total: 640.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000197", date: "19/05/2025", total: 4925.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000198", date: "20/05/2025", total: 0.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000208", date: "23/05/2025", total: 54692.31, pending: 5000.00, status: "Parcial" },
+            { ne: "2025NE000210", date: "26/05/2025", total: 11844.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000211", date: "26/05/2025", total: 14042.12, pending: 2000.00, status: "Parcial" },
+            { ne: "2025NE000219", date: "29/05/2025", total: 28295.00, pending: 3000.00, status: "Parcial" },
+            { ne: "2025NE000220", date: "29/05/2025", total: 9720.00, pending: 1500.00, status: "Parcial" },
+            { ne: "2025NE000250", date: "06/06/2025", total: 5200.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000257", date: "11/06/2025", total: 8798.08, pending: 1500.00, status: "Parcial" },
+            { ne: "2025NE000260", date: "12/06/2025", total: 2550.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000267", date: "24/06/2025", total: 0.00, pending: 0.00, status: "Pendência" },
+            { ne: "2025NE000268", date: "24/06/2025", total: 0.00, pending: 0.00, status: "Pendência" },
+            { ne: "2025NE000313", date: "25/07/2025", total: 1284.55, pending: 0.00, status: "Total" },
+            { ne: "2025NE000318", date: "30/07/2025", total: 1848.20, pending: 500.00, status: "Parcial" },
+            { ne: "2025NE000347", date: "07/08/2025", total: 103.03, pending: 0.00, status: "Total" },
+            { ne: "2025NE000359", date: "14/08/2025", total: 3000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000360", date: "14/08/2025", total: 2000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000367", date: "18/08/2025", total: 333.29, pending: 0.00, status: "Total" },
+            { ne: "2025NE000377", date: "19/08/2025", total: 1267.50, pending: 0.00, status: "Total" },
+            { ne: "2025NE000381", date: "21/08/2025", total: 11317.75, pending: 0.00, status: "Total" },
+            { ne: "2025NE000408", date: "12/09/2025", total: 15737.87, pending: 2000.00, status: "Parcial" },
+            { ne: "2025NE000415", date: "17/09/2025", total: 1150.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000604", date: "09/12/2025", total: 2498.57, pending: 0.00, status: "Total" },
+            { ne: "2025NE000605", date: "11/12/2025", total: 2605.29, pending: 0.00, status: "Total" },
+            { ne: "2025NE000606", date: "12/12/2025", total: 11615.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE000610", date: "17/12/2025", total: 8000.00, pending: 0.00, status: "Total" },
+            { ne: "2025NE400047", date: "14/01/2025", total: 56725.61, pending: 5000.00, status: "Parcial" },
+            { ne: "2025NE400048", date: "14/01/2025", total: 9110.12, pending: 1000.00, status: "Parcial" }
+        ];
+
+        // Format Currency
+        const formatBRL = (value) => {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        };
+
+        // Navigation Logic
+        function switchTab(tabId) {
+            ['dashboard', 'risks', 'insights', 'list'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).classList.remove('active', 'border-b-2', 'border-amber-600', 'text-amber-600');
+                document.getElementById(`tab-${id}`).classList.add('text-stone-500');
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            activeTab.classList.add('active');
+            activeTab.classList.remove('text-stone-500');
+        }
+
+        // Table Rendering
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            if (data.length === 0) {
+                document.getElementById('noResults').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('noResults').classList.add('hidden');
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                let statusClass = item.status === 'Total' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+                if(item.total === 0 && item.pending === 0 && item.status !== 'Total') statusClass = 'bg-red-100 text-red-800';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-stone-900">${item.ne}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">${item.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-900 text-right font-medium">${formatBRL(item.total)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-900 text-right font-bold">${formatBRL(item.pending)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${item.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Table Filtering
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const filtered = notesList.filter(item => {
+                const matchesSearch = item.ne.toLowerCase().includes(searchTerm) || 
+                                      item.total.toString().includes(searchTerm) ||
+                                      item.pending.toString().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' ? true : 
+                                      statusFilter === 'Total' ? item.status === 'Total' :
+                                      item.status !== 'Total';
+                return matchesSearch && matchesStatus;
+            });
+            renderTable(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterTable);
+        document.getElementById('statusFilter').addEventListener('change', filterTable);
+
+        // Chart Initialization
+        new Chart(document.getElementById('chartStatus'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Liquidado', 'A Liquidar'],
+                datasets: [{
+                    data: [reportData.totalLiquidado, reportData.totalALiquidar],
+                    backgroundColor: ['#059669', '#d97706'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) { return ' ' + context.label + ': ' + formatBRL(context.raw); }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartCount'), {
+            type: 'bar',
+            data: {
+                labels: ['Totalmente Liquidada', 'Parcial / Pendente'],
+                datasets: [{
+                    label: 'Quantidade de Notas',
+                    data: [reportData.countLiquidado, reportData.countParcial],
+                    backgroundColor: ['#059669', '#d97706'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { display: false } } }
+            }
+        });
+
+        const riskValues = top5Risks.map(r => r.val);
+        riskValues.push(reportData.totalALiquidar - riskValues.reduce((a,b) => a+b, 0));
+        new Chart(document.getElementById('chartRisks'), {
+            type: 'pie',
+            data: {
+                labels: [...top5Risks.map(r => r.fav.substring(0, 10) + '...'), 'Outros (43 notas)'],
+                datasets: [{
+                    data: riskValues,
+                    backgroundColor: ['#b91c1c', '#c2410c', '#d97706', '#f59e0b', '#fcd34d', '#e5e7eb'],
+                    borderWidth: 1,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const val = context.raw;
+                                const pct = (val / reportData.totalALiquidar * 100).toFixed(1);
+                                return ` ${formatBRL(val)} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartEffort'), {
+            type: 'bar',
+            data: {
+                labels: ['Volume de Trabalho (Notas)', 'Valor Financeiro (R$)'],
+                datasets: [
+                    { label: 'Top 5 Pendências', data: [5, 150477.87], backgroundColor: '#d97706', stack: 'Stack 0' },
+                    { label: 'Demais Pendências', data: [15, 69602.52], backgroundColor: '#a8a29e', stack: 'Stack 0' }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if(context.datasetIndex === 0 && context.dataIndex === 0) return "5 Notas Críticas";
+                                if(context.datasetIndex === 1 && context.dataIndex === 0) return "15 Notas Menores";
+                                return context.dataset.label + ": " + (context.dataIndex === 1 ? formatBRL(context.raw) : context.raw);
+                            }
+                        }
+                    }
+                },
+                scales: { x: { display: false }, y: { grid: { display: false } } }
+            }
+        });
+
+        renderTable(notesList);
+    </script>
+</body>
+</html>
